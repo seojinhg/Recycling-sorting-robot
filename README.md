@@ -80,16 +80,20 @@ Three datasets were trained and compared. The model with the lowest validation l
 
 **Korea-Specific Dataset Problem & Solution** 💡
 
-Korean plastic bottles are typically transparent and label-free. Under lab lighting or sunlight, they become nearly invisible to the model — causing frequent detection failures with the public Roboflow dataset.
+The initial model trained on the Roboflow public dataset showed **89% accuracy**, but had a critical misclassification issue: **cans were frequently detected as plastic** due to bright indoor lighting in the lab. Under strong lighting, the shiny surface of cans visually resembled transparent plastic bottles, confusing the model.
 
-To solve this, I **proposed and built a custom dataset** by personally photographing plastic bottles, cans, and paper commonly used in Korea, and retrained the model on this data.
+To solve this:
+1. Captured ~50 photos of real Korean recyclables (cans, plastic bottles, paper) using the RealSense camera in the actual lab environment
+2. Applied data augmentation to expand the dataset to ~100 images per class
+3. Combined with the existing dataset to create a total of ~2,000 training images
+4. Retrained the YOLOv11 model on this new dataset
 
-| Dataset | Detection Accuracy |
-|---------|-------------------|
-| Roboflow public dataset | 79% |
-| **Custom Korean dataset (self-collected)** | **98%** |
+| Dataset | Detection Accuracy | Issue |
+|---------|-------------------|-------|
+| Roboflow public dataset | 89% | Cans misclassified as plastic under bright lighting |
+| **Custom Korean dataset (self-collected)** | **98%** | ✅ Resolved |
 
-This 19%p improvement in accuracy was a direct result of aligning training data with the real deployment environment.
+This 9%p improvement in accuracy was a direct result of aligning training data with the actual deployment environment.
 
 ---
 
@@ -103,6 +107,8 @@ This 19%p improvement in accuracy was a direct result of aligning training data 
 **Real-time Bin Fullness Detection** 💡
 
 In real-world recycling scenarios (homes, recycling stations), bins need to be emptied promptly when full. To address this, I implemented a **real-time depth-based bin monitoring system** that alerts the user when a bin is full.
+
+The RealSense camera continuously monitors the **z-axis depth value** above each bin. When the measured z-height drops below a predefined threshold (indicating the bin is nearly full), the system triggers an alert via TTS.
 
 To prevent the bin monitoring from blocking the robot control pipeline, both nodes run in parallel using **`MultiThreadExecutor()`**:
 - Without parallel execution, the bin monitoring loop would block the main robot control node, causing delays in pick & place operations
@@ -251,7 +257,7 @@ ros2 run dream robot_control
 
 | Item | Result |
 |------|--------|
-| Detection Accuracy (Roboflow dataset) | 79% |
+| Detection Accuracy (Roboflow dataset) | 89% |
 | Detection Accuracy (Custom Korean dataset) | **98%** |
 | Recyclable categories (live) | Can, Paper, Plastic |
 | Voice → Pick & Place full pipeline | ✅ Fully operational |
