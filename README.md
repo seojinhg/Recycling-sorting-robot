@@ -114,6 +114,11 @@ To prevent the bin monitoring from blocking the robot control pipeline, both nod
 - Without parallel execution, the bin monitoring loop would block the main robot control node, causing delays in pick & place operations
 - `MultiThreadExecutor()` allows both nodes to spin simultaneously, enabling real-time alerts during robot operation without any interference
 
+<p align="center">
+  <img src="recycling_gifs/bin_fullness_detection.gif" width="280" alt="Depth-based bin fullness detection"><br>
+  <em>Depth-based bin fullness detection (2x speed)</em>
+</p>
+
 ---
 
 ### 3. Doosan M0609 — Stable Grip & Sorting Logic ⭐
@@ -125,6 +130,11 @@ Since objects can be placed in any orientation (unpredictable), a fixed gripper 
 - The **aspect ratio of the bounding box** is calculated
 - The gripper **rotates to grasp along the shorter axis**, maximizing grip stability
 - This improves adaptability for randomly oriented or deformed objects
+
+<p align="center">
+  <img src="recycling_gifs/rotate_and_grasp.gif" width="280" alt="Gripper rotation based on bounding box ratio"><br>
+  <em>Gripper rotates to the shorter axis of the bounding box before grasping</em>
+</p>
 
 **Motion Compensation for Difficult Objects**
 
@@ -268,7 +278,10 @@ ros2 run dream robot_control
 
 ## 🎬 Demo
 
-> 📹 Demo video coming soon
+<p align="center">
+  <img src="recycling_gifs/demo.gif" width="720" alt="Full demo: voice command, YOLO detection, pick & place, bin fullness alert"><br>
+  <em>Full pipeline: wake word → voice command → YOLOv11 detection → pick & place → bin fullness alert (2x speed)</em>
+</p>
 
 ---
 
